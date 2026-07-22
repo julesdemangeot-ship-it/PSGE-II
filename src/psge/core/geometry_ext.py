@@ -40,14 +40,14 @@ class GeometryExtrinsic:
             Dihedral angle in radians [0, pi]
         """
         # Vectors in first face
-        v1 = p3 - p1
-        v2 = p2 - p1
+        v1 = np.asarray(p3, dtype=float) - np.asarray(p1, dtype=float)
+        v2 = np.asarray(p2, dtype=float) - np.asarray(p1, dtype=float)
         n1 = np.cross(v1, v2)
         n1 /= np.linalg.norm(n1)
         
         # Vectors in second face
-        v3 = p4 - p1
-        n2 = np.cross(v2, v3)
+        v3 = np.asarray(p4, dtype=float) - np.asarray(p1, dtype=float)
+        n2 = np.cross(v3, v2)
         n2 /= np.linalg.norm(n2)
         
         # Dihedral angle

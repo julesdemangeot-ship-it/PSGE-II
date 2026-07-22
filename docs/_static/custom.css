@@ -1,0 +1,16 @@
+/* Custom CSS overrides for PSGE-II documentation */
+
+/* Wider content area */
+.wy-nav-content {
+    max-width: 1000px;
+}
+
+/* Code blocks */
+div.highlight pre {
+    font-size: 0.85em;
+}
+
+/* Math equations */
+.math {
+    overflow-x: auto;
+}

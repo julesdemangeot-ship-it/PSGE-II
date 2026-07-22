@@ -4,24 +4,26 @@ Provides functions for computing volumes of simplices using both
 embedding coordinates (extrinsic) and intrinsic distance data.
 """
 
+import math
+
 import numpy as np
 from typing import Optional
 
 
 def simplex_volume_extrinsic(points: np.ndarray) -> float:
     """Compute volume of simplex from embedded coordinates.
-    
-    Uses the formula: V = |det(edges)| / n!
-    where edges are vectors from first vertex to all others.
-    
+
+    Uses the formula V = abs(det(edges)) / n! where *edges* are the vectors
+    from the first vertex to each of the remaining vertices.
+
     Args:
         points: Array of shape (n+1, d) representing n-simplex vertices in d-space
-        
+
     Returns:
         Volume of the simplex
     """
     edges = points[1:] - points[0]
-    volume = np.abs(np.linalg.det(edges)) / np.math.factorial(len(edges))
+    volume = np.abs(np.linalg.det(edges)) / math.factorial(len(edges))
     return volume
 
 
@@ -47,7 +49,7 @@ def simplex_volume_intrinsic(distances: np.ndarray) -> Optional[float]:
     if cm_det * expected_sign <= 0:
         return None  # Degenerate or non-embeddable
     
-    volume_squared = (expected_sign * cm_det) / (2 ** n * (np.math.factorial(n) ** 2))
+    volume_squared = (expected_sign * cm_det) / (2 ** n * (math.factorial(n) ** 2))
     
     if volume_squared < 0:
         return None
