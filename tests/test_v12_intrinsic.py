@@ -97,13 +97,13 @@ class TestGeometryIntrinsic:
         """Intrinsic result agrees with extrinsic computation for a known tetrahedron."""
         from psge.core.geometry_ext import GeometryExtrinsic
 
-        s3 = math.sqrt(3)
-        s6 = math.sqrt(6)
+        sqrt_3 = math.sqrt(3)
+        sqrt_6 = math.sqrt(6)
         points = np.array([
             [0.0, 0.0, 0.0],
             [1.0, 0.0, 0.0],
-            [0.5, s3 / 2.0, 0.0],
-            [0.5, s3 / 6.0, s6 / 3.0],
+            [0.5, sqrt_3 / 2.0, 0.0],
+            [0.5, sqrt_3 / 6.0, sqrt_6 / 3.0],
         ])
         D = _distance_matrix(points)
 

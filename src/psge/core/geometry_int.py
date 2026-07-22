@@ -58,9 +58,12 @@ class GeometryIntrinsic:
             return None  # Non-embeddable configuration
 
         eigenvalues = np.maximum(eigenvalues, 0.0)  # clip numerical noise
-        # Rows of *coords* are embedding coordinates of vertices 1, 2, 3
-        # relative to vertex 0 at the origin.  coords @ coordsᵀ == G.
-        coords = eigenvectors * np.sqrt(eigenvalues)  # (3, 3)
+        # Build P = V @ diag(sqrt(Λ)) so that P @ Pᵀ = G.
+        # Broadcasting: each column j of eigenvectors is multiplied by
+        # sqrt(eigenvalues[j]), which is equivalent to
+        # eigenvectors @ np.diag(np.sqrt(eigenvalues)).
+        # Row i of P is the embedding coordinate of vertex i+1.
+        coords = eigenvectors * np.sqrt(eigenvalues)  # shape (3, 3)
 
         p0 = np.zeros(3)
         p1 = coords[0]  # vertex 1
