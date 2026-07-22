@@ -71,3 +71,15 @@ python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.coverage.run]
+source = ["src/psge"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
