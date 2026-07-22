@@ -178,6 +178,38 @@ class TestSimplexVolumeExtrinsic:
         vol_translated = simplex_volume_extrinsic(regular_tetrahedron_points + translation)
         assert np.isclose(vol_original, vol_translated, atol=1e-12)
 
+    def test_equilateral_triangle_in_3d(self):
+        """Equilateral triangle (side=1) embedded in ℝ³: area = sqrt(3)/4.
+
+        The edge matrix is 2×3 (non-square), so the QR/Gram approach is required.
+        """
+        points = np.array([
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [0.5, math.sqrt(3) / 2.0, 0.0],
+        ])
+        area = simplex_volume_extrinsic(points)
+        assert np.isclose(area, math.sqrt(3) / 4.0, atol=1e-12)
+
+    def test_right_triangle_in_3d(self):
+        """Right triangle with unit legs in ℝ³: area = 0.5."""
+        points = np.array([
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+        ])
+        area = simplex_volume_extrinsic(points)
+        assert np.isclose(area, 0.5, atol=1e-12)
+
+    def test_segment_in_3d(self):
+        """Line segment of length 5 in ℝ³: 1-volume = 5."""
+        points = np.array([
+            [0.0, 0.0, 0.0],
+            [3.0, 4.0, 0.0],
+        ])
+        length = simplex_volume_extrinsic(points)
+        assert np.isclose(length, 5.0, atol=1e-12)
+
 
 # ===========================================================================
 # Simplex volume — intrinsic
