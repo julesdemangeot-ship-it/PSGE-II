@@ -13,8 +13,10 @@ from typing import Optional
 def simplex_volume_extrinsic(points: np.ndarray) -> float:
     """Compute volume of simplex from embedded coordinates.
 
-    Uses the formula V = abs(det(edges)) / n! where *edges* are the vectors
-    from the first vertex to each of the remaining vertices.
+    Uses the formula V = sqrt(det(edges @ edges.T)) / n! where *edges* are
+    the vectors from the first vertex to each of the remaining vertices.
+    This generalises correctly to non-square edge matrices (e.g. a triangle
+    in ℝ³ where edges has shape (2, 3)).
 
     Args:
         points: Array of shape (n+1, d) representing n-simplex vertices in d-space
@@ -23,7 +25,9 @@ def simplex_volume_extrinsic(points: np.ndarray) -> float:
         Volume of the simplex
     """
     edges = points[1:] - points[0]
-    volume = np.abs(np.linalg.det(edges)) / math.factorial(len(edges))
+    gram = edges @ edges.T
+    det_val = np.linalg.det(gram)
+    volume = np.sqrt(max(det_val, 0.0)) / math.factorial(len(edges))
     return volume
 
 
