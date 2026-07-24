@@ -2,6 +2,13 @@
 
 Intrinsic Euclidean Regge Geometry Engine
 
+## Support / Soutien
+
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/julesdemangeot)
+
+**FR :** Si ce projet vous est utile, vous pouvez soutenir mon travail ici : [ko-fi.com/julesdemangeot](https://ko-fi.com/julesdemangeot)  
+**EN:** If this project is useful to you, you can support my work here: [ko-fi.com/julesdemangeot](https://ko-fi.com/julesdemangeot)
+
 ## Overview
 
 PSGE-II is a computational geometry engine implementing the Regge Calculus formalism for discrete spacetime geometry. The project is organized in progressive versions, each adding capabilities while maintaining analytical validation.
@@ -104,7 +111,3 @@ See `LICENSE` file.
 
 - Regge, T. (1961). "General Relativity Without Coordinates"
 - Williams, R.M. & Tuckey, P.A. (1992). "Regge Calculus: A Brief Review and Bibliography"
-
-## Don
-
-Soutenez mon travail ici : [Ko-fi](https://ko-fi.com/julesdemangeot)
