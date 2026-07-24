@@ -4,7 +4,7 @@ Intrinsic Euclidean Regge Geometry Engine
 
 ## Overview
 
-PSGE-II is a computational geometry engine implementing the Regge Calculus formalism for discrete spacetime geometry. The project is organized in progressive versions, each adding capabilities while maintaining backward compatibility.
+PSGE-II is a computational geometry engine implementing the Regge Calculus formalism for discrete spacetime geometry. The project is organized in progressive versions, each adding capabilities while maintaining analytical validation.
 
 ## Versions
 
@@ -104,3 +104,7 @@ See `LICENSE` file.
 
 - Regge, T. (1961). "General Relativity Without Coordinates"
 - Williams, R.M. & Tuckey, P.A. (1992). "Regge Calculus: A Brief Review and Bibliography"
+
+## Don
+
+Soutenez mon travail ici : [Ko-fi](https://ko-fi.com/julesdemangeot)
