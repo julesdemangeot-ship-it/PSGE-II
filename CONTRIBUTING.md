@@ -21,7 +21,7 @@ Before opening a new issue, please search existing issues to avoid duplicates.
 When filing a bug report, include:
 - Python version and OS
 - Minimal reproducible example
-- Expected vs. actual behaviour
+- Expected vs. actual behavior
 - Full traceback if applicable
 
 ---
@@ -30,7 +30,7 @@ When filing a bug report, include:
 
 1. Fork the repository and create a feature branch from `main` (or `develop/v1.2` for v1.2 work).
 2. Make your changes with clear, focused commits.
-3. Ensure all tests pass and coverage stays above 80 %:
+3. Ensure all tests pass and coverage stays above 80%:
    ```bash
    pytest tests/ --cov=psge --cov-fail-under=80
    ```
