@@ -101,7 +101,7 @@ pytest tests/
 ## Branching Strategy
 
 | Branch | Purpose |
-|--------|---------|
+| ------ | ------- |
 | `main` | Integration branch — PRs must pass CI |
 | `stable/v1.1` | Protected stable reference — no direct pushes |
 | `develop/v1.2` | Active feature development |
