@@ -108,6 +108,24 @@ class TestCayleyMengerDeterminant:
         cm = cayley_menger_determinant(regular_tetrahedron_distances)
         assert np.isfinite(cm)
 
+    def test_near_degenerate_triangle_sweep(self):
+        """As a triangle flattens, CM determinant magnitude should collapse to zero."""
+        heights = [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8]
+        dets = []
+        for h in heights:
+            points = np.array([
+                [0.0, 0.0],
+                [1.0, 0.0],
+                [0.5, h],
+            ])
+            d = np.linalg.norm(points[:, None, :] - points[None, :, :], axis=-1)
+            dets.append(cayley_menger_determinant(d))
+
+        abs_dets = np.abs(np.array(dets))
+        assert np.all(abs_dets[1:] <= abs_dets[:-1] * (1.0 + 1e-12))
+        assert np.any(abs_dets[:-1] > 0.0)
+        assert abs_dets[-1] == 0.0
+
 
 # ===========================================================================
 # Metric signature
