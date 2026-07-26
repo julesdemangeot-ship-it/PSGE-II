@@ -34,13 +34,59 @@ jobs:
       - name: Build Sphinx HTML
         run: sphinx-build -W --keep-going -b html docs/ docs/_build/html
 
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
+      - id: pages-site
+        name: Check whether GitHub Pages is enabled
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          umask 077
+          pages_response="$(mktemp)"
+          trap 'rm -f "$pages_response"' EXIT
+          status="$(curl -sS -o "$pages_response" -w "%{http_code}" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pages")"
+          if [ "$status" = "200" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          elif [ "$status" = "404" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::GitHub Pages API request failed with HTTP status $status."
+            python - "$pages_response" <<'PY'
+            import json
+            import pathlib
+            import sys
+            try:
+                data = json.loads(pathlib.Path(sys.argv[1]).read_text())
+            except FileNotFoundError:
+                print("GitHub API response file was not found. This may indicate a GitHub API issue or network problem. Please check GitHub status or retry the workflow.", file=sys.stderr)
+                raise SystemExit(1)
+            except json.JSONDecodeError:
+                print("GitHub API response body was not valid JSON. This may indicate a GitHub API issue or network problem. Please check GitHub status or retry the workflow.", file=sys.stderr)
+                raise SystemExit(1)
+            message = data.get("message")
+            errors = data.get("errors")
+            if message:
+                print(f"GitHub API message: {message}", file=sys.stderr)
+            if errors:
+                print(f"GitHub API errors: {errors}", file=sys.stderr)
+            PY
+            exit 1
+          fi
 
-      - uses: actions/upload-pages-artifact@v3
+      - if: steps.pages-site.outputs.enabled == 'true'
+        uses: actions/configure-pages@v5
+
+      - if: steps.pages-site.outputs.enabled == 'true'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: docs/_build/html
 
+      - name: Skip deployment when GitHub Pages is disabled
+        if: steps.pages-site.outputs.enabled != 'true'
+        run: echo "::notice::GitHub Pages is not enabled for ${{ github.repository }}; skipping deployment."
+
       - id: deployment
+        if: steps.pages-site.outputs.enabled == 'true'
         uses: actions/deploy-pages@v4
