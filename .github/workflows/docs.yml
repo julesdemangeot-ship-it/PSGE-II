@@ -41,10 +41,10 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           umask 077
-          pages_api_response_file="$(mktemp)"
+          pages_api_response_file="$(mktemp -t pages-api-response.XXXXXX)"
           trap 'rm -f "$pages_api_response_file"' EXIT
           status="$(curl -sS -o "$pages_api_response_file" -w "%{http_code}" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Authorization: ******" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${REPO}/pages")"
           if [ "$status" = "200" ]; then
@@ -53,18 +53,22 @@ jobs:
             echo "enabled=false" >> "$GITHUB_OUTPUT"
           else
             echo "::error::GitHub Pages API request failed with HTTP status $status."
-            python - "$pages_api_response_file" <<'PY'
+            PAGES_API_RESPONSE_FILE="$pages_api_response_file" HTTP_STATUS="$status" python <<'PY'
             import json
+            import os
             import pathlib
             import sys
             try:
-                data = json.loads(pathlib.Path(sys.argv[1]).read_text())
+                data = json.loads(pathlib.Path(os.environ["PAGES_API_RESPONSE_FILE"]).read_text())
             except json.JSONDecodeError:
                 print("GitHub API response body was not valid JSON.", file=sys.stderr)
-                print("Check for GitHub API issues, auth problems, or rate limiting.", file=sys.stderr)
+                print("Check for GitHub API issues, service changes, or rate limiting.", file=sys.stderr)
                 raise SystemExit(1)
             except OSError:
-                print("Response file could not be read. This may indicate a system issue or that curl failed to write the response.", file=sys.stderr)
+                print(
+                    "Response file could not be read. This may indicate a system issue or that curl failed to write the response.",
+                    file=sys.stderr,
+                )
                 raise SystemExit(1)
             message = data.get("message")
             errors = data.get("errors")
