@@ -59,11 +59,11 @@ jobs:
             import sys
             try:
                 data = json.loads(pathlib.Path(sys.argv[1]).read_text())
-            except FileNotFoundError:
-                print("GitHub API response file was not found. This may indicate a GitHub API issue or network problem. Please check GitHub status or retry the workflow.", file=sys.stderr)
-                raise SystemExit(1)
             except json.JSONDecodeError:
-                print("GitHub API response body was not valid JSON. This may indicate a GitHub API issue or network problem. Please check GitHub status or retry the workflow.", file=sys.stderr)
+                print("GitHub API response body was not valid JSON. This may indicate a GitHub API issue, authentication problem, or API rate limiting. Please check GitHub status or retry the workflow.", file=sys.stderr)
+                raise SystemExit(1)
+            except OSError:
+                print("Response file could not be read. This may indicate a system issue or that curl failed to write the response.", file=sys.stderr)
                 raise SystemExit(1)
             message = data.get("message")
             errors = data.get("errors")
