@@ -41,7 +41,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           umask 077
-          pages_response="$(mktemp)"
+          pages_response="$(mktemp -t pages_response.XXXXXX)"
           trap 'rm -f "$pages_response"' EXIT
           status="$(curl -sS -o "$pages_response" -w "%{http_code}" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
@@ -53,7 +53,6 @@ jobs:
             echo "enabled=false" >> "$GITHUB_OUTPUT"
           else
             echo "::error::GitHub Pages API request failed with HTTP status $status."
-            cat "$pages_response"
             exit 1
           fi
 
