@@ -37,14 +37,14 @@ jobs:
       - id: pages-site
         name: Check whether GitHub Pages is enabled
         env:
-          GH_TOKEN: ${{ github.token }}
+          AUTHORIZATION_HEADER: Bearer ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
           umask 077
-          pages_response="$(mktemp -t pages_response)"
+          pages_response="$(mktemp)"
           trap 'rm -f "$pages_response"' EXIT
           status="$(curl -sS -o "$pages_response" -w "%{http_code}" \
-            -H "Authorization: ******" \
+            -H "Authorization: ${AUTHORIZATION_HEADER}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${REPO}/pages")"
           if [ "$status" = "200" ]; then
@@ -59,7 +59,11 @@ jobs:
             import sys
             try:
                 data = json.loads(pathlib.Path(sys.argv[1]).read_text())
-            except Exception:
+            except FileNotFoundError:
+                print("GitHub API response file was not found.", file=sys.stderr)
+                raise SystemExit(0)
+            except json.JSONDecodeError:
+                print("GitHub API response body was not valid JSON.", file=sys.stderr)
                 raise SystemExit(0)
             message = data.get("message")
             errors = data.get("errors")
