@@ -67,7 +67,7 @@ jobs:
 
       - name: Skip deployment when GitHub Pages is disabled
         if: steps.pages-site.outputs.enabled != 'true'
-        run: echo "::notice::GitHub Pages is not enabled for ${GITHUB_REPOSITORY}; skipping deployment."
+        run: echo "::notice::GitHub Pages is not enabled for ${{ github.repository }}; skipping deployment."
 
       - id: deployment
         if: steps.pages-site.outputs.enabled == 'true'
