@@ -101,7 +101,7 @@ python -m psge.validation.suite
 
 ## Contributing
 
-See `CONTRIBUTING.md` for guidelines on contributing to the project.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on contributing to the project.
 
 ## License
 
