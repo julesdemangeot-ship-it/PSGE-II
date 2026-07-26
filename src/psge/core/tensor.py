@@ -33,14 +33,31 @@ def cayley_menger_determinant(distances: np.ndarray) -> float:
     Returns:
         Cayley-Menger determinant value
     """
+    distances = np.asarray(distances, dtype=float)
     n = distances.shape[0]
     # Construct Cayley-Menger matrix
     cm = np.zeros((n + 1, n + 1))
     cm[0, 1:] = 1
     cm[1:, 0] = 1
     cm[1:, 1:] = distances ** 2
-    
-    return np.linalg.det(cm)
+
+    sign, logabsdet = np.linalg.slogdet(cm)
+    if sign == 0:
+        return 0.0
+    if not np.isfinite(logabsdet):
+        return float(sign * np.inf)
+
+    det = float(sign * np.exp(logabsdet))
+
+    # Hadamard-scaled tolerance: keeps the threshold dimensionally consistent
+    # with the determinant and robust to simplex size scaling.
+    row_norms = np.linalg.norm(cm, axis=1)
+    scale = float(np.prod(row_norms))
+    tolerance = np.finfo(float).eps * scale * (n + 1)
+    if abs(det) <= tolerance:
+        return 0.0
+
+    return det
 
 
 def metric_signature(gram: np.ndarray) -> Tuple[int, int, int]:
